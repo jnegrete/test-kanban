@@ -1,0 +1,62 @@
+# Proposal: kanban-board
+
+## Intent
+Build a full kanban board application from scratch that lets users manage tasks across columns with drag-and-drop, CRUD operations on cards, and local persistence.
+
+## Scope
+### In Scope
+- Project scaffolding (package.json, Vite/React setup)
+- Board component with 3 default columns (To Do, In Progress, Done)
+- Card component with title, description display
+- CRUD operations for cards (create, read, update, delete)
+- Drag-and-drop cards between columns
+- localStorage persistence
+- Basic tests
+
+### Out of Scope
+- Backend/server-side persistence
+- User authentication
+- Real-time collaboration
+- Custom column creation/deletion (for now)
+
+## Capabilities
+### New Capabilities
+- `board-management`: Board with columns and card display
+- `card-crud`: Create, read, update, delete cards
+- `card-reorder`: Drag-and-drop cards between and within columns
+- `data-persistence`: Save/load board state from localStorage
+
+## Approach
+React with Vite as build tool, CSS for styling (no library), react-beautiful-dnd or @dnd-kit for drag-and-drop, localStorage for persistence, Vitest + React Testing Library for testing.
+
+## Affected Areas
+| Area | Impact | Description |
+|------|--------|-------------|
+| `src/index.js` | New | Application entry point |
+| `src/App.jsx` | New | Main board component |
+| `src/components/` | New | Card and column components |
+| `src/hooks/` | New | Custom hooks for persistence |
+| `tests/` | New | Unit tests for core functionality |
+
+## Risks
+| Risk | Likelihood | Mitigation |
+|------|------------|------------|
+| Drag-and-drop library selection may affect UX quality | Med | Document library decision and provide alternatives |
+| localStorage limits may be hit with large datasets | Low | Add warning about storage limits |
+| No CI may lead to regressions | High | Create manual test checklist |
+
+## Rollback Plan
+git revert since there's no deployed version.
+
+## Dependencies
+- react
+- vite
+- react-beautiful-dnd
+- vitest
+
+## Success Criteria
+- [ ] User can view 3 columns with cards
+- [ ] User can add, edit, delete cards
+- [ ] User can drag cards between columns
+- [ ] Board state persists across page reloads
+- [ ] Tests pass for core functionality
