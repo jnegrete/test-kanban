@@ -53,6 +53,43 @@ export function boardReducer(state, action) {
       return { ...state, columns: newColumns, cards: newCards }
     }
 
+    case 'DELETE_COLUMN': {
+      const { columnId } = action.payload
+      if (!state.columns[columnId]) return state
+      if (state.columns[columnId].cardIds.length > 0) return state
+      const newColumns = { ...state.columns }
+      delete newColumns[columnId]
+      return {
+        ...state,
+        columns: newColumns,
+        columnOrder: state.columnOrder.filter((id) => id !== columnId),
+      }
+    }
+
+    case 'RENAME_COLUMN': {
+      const { columnId, title } = action.payload
+      if (!state.columns[columnId]) return state
+      if (!title || !title.trim()) return state
+      return {
+        ...state,
+        columns: {
+          ...state.columns,
+          [columnId]: { ...state.columns[columnId], title: title.trim() },
+        },
+      }
+    }
+
+    case 'ADD_COLUMN': {
+      const { title } = action.payload
+      if (!title || !title.trim()) return state
+      const id = generateId()
+      return {
+        ...state,
+        columns: { ...state.columns, [id]: { id, title: title.trim(), cardIds: [] } },
+        columnOrder: [...state.columnOrder, id],
+      }
+    }
+
     case 'MOVE_CARD': {
       const { cardId, sourceColId, destColId, destIndex } = action.payload
       if (!state.cards[cardId]) return state
@@ -96,5 +133,17 @@ export function useBoardState(state, dispatch) {
     dispatch({ type: 'MOVE_CARD', payload: { cardId, sourceColId, destColId, destIndex } })
   }, [dispatch])
 
-  return { addCard, editCard, deleteCard, moveCard }
+  const addColumn = useCallback((title) => {
+    dispatch({ type: 'ADD_COLUMN', payload: { title } })
+  }, [dispatch])
+
+  const renameColumn = useCallback((columnId, title) => {
+    dispatch({ type: 'RENAME_COLUMN', payload: { columnId, title } })
+  }, [dispatch])
+
+  const deleteColumn = useCallback((columnId) => {
+    dispatch({ type: 'DELETE_COLUMN', payload: { columnId } })
+  }, [dispatch])
+
+  return { addCard, editCard, deleteCard, moveCard, addColumn, renameColumn, deleteColumn }
 }
