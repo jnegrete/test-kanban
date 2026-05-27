@@ -1,0 +1,55 @@
+# openspec/config.yaml
+schema: spec-driven
+
+context: |
+  Tech stack: React 19 + Vite 8 + JavaScript (JSX)
+  Architecture: Single-page app, custom hooks for state/persistence, reducer pattern, plain CSS
+  Testing: Vitest 4 + @testing-library/react 16 + jsdom 29, test dir at tests/
+  Style: Functional components, JSX, no TypeScript, CSS in separate files per component
+  Drag-and-drop: @dnd-kit/core + @dnd-kit/sortable
+  Persistence: localStorage with JSON serialization
+
+testing:
+  strict_tdd: true
+  runner: vitest
+  command: npm test
+  watch_command: npm run test:watch
+  layers:
+    unit: vitest
+    integration: "@testing-library/react"
+    e2e: false
+  coverage:
+    available: false
+    command: ""
+  quality:
+    linter: false
+    type_checker: false
+    formatter: false
+
+rules:
+  proposal:
+    - Include intent, scope (in/out), capabilities, affected areas, risks, and rollback plan
+    - Keep scope realistic for single-sprint changes
+  specs:
+    - Use Given/When/Then for all scenarios
+    - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
+    - Group scenarios by requirement within domain
+  design:
+    - Document architecture decisions with rationale and alternatives considered
+    - Include data model for state changes
+    - Include component tree and data flow diagram
+    - List all file changes with action and description
+  tasks:
+    - Group by phase with hierarchical numbering
+    - Keep tasks completable in one session
+    - Include test tasks alongside implementation tasks
+  apply:
+    - Follow existing component patterns before creating new ones
+    tdd: false
+    test_command: npm test
+  verify:
+    test_command: npm test
+    build_command: npm run build
+    coverage_threshold: 0
+  archive:
+    - Warn before merging destructive deltas
