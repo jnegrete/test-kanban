@@ -23,6 +23,9 @@ export default function App() {
       onEditCard={actions.editCard}
       onDeleteCard={actions.deleteCard}
       onMoveCard={actions.moveCard}
+      onAddColumn={actions.addColumn}
+      onRenameColumn={actions.renameColumn}
+      onDeleteColumn={actions.deleteColumn}
     />
   )
 }

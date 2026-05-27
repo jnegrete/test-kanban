@@ -17,3 +17,28 @@ body {
   min-height: 100vh;
   overflow-x: auto;
 }
+
+.add-column-btn {
+  min-width: 280px;
+  max-width: 320px;
+  flex: 1;
+  padding: 1rem;
+  border: 2px dashed #ccc;
+  border-radius: 12px;
+  background: transparent;
+  color: #666;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.15s;
+  align-self: flex-start;
+}
+
+.add-column-btn:hover {
+  border-color: #999;
+  color: #333;
+  background: rgba(255,255,255,0.5);
+}
+
+.add-column-form {
+  align-self: flex-start;
+}
