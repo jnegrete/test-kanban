@@ -110,6 +110,122 @@ describe('boardReducer', () => {
     })
   })
 
+  describe('DELETE_COLUMN', () => {
+    const boardWithCard = {
+      columns: {
+        'todo': { id: 'todo', title: 'To Do', cardIds: ['c1'] },
+        'empty-col': { id: 'empty-col', title: 'Empty', cardIds: [] },
+      },
+      cards: {
+        c1: { id: 'c1', title: 'Task 1', description: '' },
+      },
+      columnOrder: ['todo', 'empty-col'],
+    }
+
+    it('removes an empty column', () => {
+      const state = boardReducer(boardWithCard, {
+        type: 'DELETE_COLUMN',
+        payload: { columnId: 'empty-col' },
+      })
+      expect(state.columns['empty-col']).toBeUndefined()
+      expect(state.columnOrder).toEqual(['todo'])
+    })
+
+    it('blocks deletion of non-empty column', () => {
+      const state = boardReducer(boardWithCard, {
+        type: 'DELETE_COLUMN',
+        payload: { columnId: 'todo' },
+      })
+      expect(state).toEqual(boardWithCard)
+    })
+
+    it('does nothing for non-existent columnId', () => {
+      const state = boardReducer(boardWithCard, {
+        type: 'DELETE_COLUMN',
+        payload: { columnId: 'nonexistent' },
+      })
+      expect(state).toEqual(boardWithCard)
+    })
+
+    it('allows deletion of last empty column', () => {
+      const singleEmpty = {
+        columns: { 'only': { id: 'only', title: 'Only', cardIds: [] } },
+        cards: {},
+        columnOrder: ['only'],
+      }
+      const state = boardReducer(singleEmpty, {
+        type: 'DELETE_COLUMN',
+        payload: { columnId: 'only' },
+      })
+      expect(state.columns['only']).toBeUndefined()
+      expect(state.columnOrder).toEqual([])
+    })
+  })
+
+  describe('RENAME_COLUMN', () => {
+    it('updates column title', () => {
+      const state = boardReducer(defaultBoard, {
+        type: 'RENAME_COLUMN',
+        payload: { columnId: 'todo', title: 'Updated' },
+      })
+      expect(state.columns.todo.title).toBe('Updated')
+    })
+
+    it('rejects empty title', () => {
+      const state = boardReducer(defaultBoard, {
+        type: 'RENAME_COLUMN',
+        payload: { columnId: 'todo', title: '' },
+      })
+      expect(state).toEqual(defaultBoard)
+    })
+
+    it('rejects whitespace-only title', () => {
+      const state = boardReducer(defaultBoard, {
+        type: 'RENAME_COLUMN',
+        payload: { columnId: 'todo', title: '   ' },
+      })
+      expect(state).toEqual(defaultBoard)
+    })
+
+    it('does nothing for non-existent columnId', () => {
+      const state = boardReducer(defaultBoard, {
+        type: 'RENAME_COLUMN',
+        payload: { columnId: 'nonexistent', title: 'Nope' },
+      })
+      expect(state).toEqual(defaultBoard)
+    })
+  })
+
+  describe('ADD_COLUMN', () => {
+    it('creates a new column and appends to columnOrder', () => {
+      const state = boardReducer(defaultBoard, {
+        type: 'ADD_COLUMN',
+        payload: { title: 'New Column' },
+      })
+      const newColId = state.columnOrder[3]
+      expect(newColId).toBeDefined()
+      expect(state.columns[newColId].title).toBe('New Column')
+      expect(state.columns[newColId].cardIds).toEqual([])
+      expect(state.columnOrder).toHaveLength(4)
+    })
+
+    it('rejects empty title', () => {
+      const state = boardReducer(defaultBoard, {
+        type: 'ADD_COLUMN',
+        payload: { title: '' },
+      })
+      expect(state).toEqual(defaultBoard)
+    })
+
+    it('rejects whitespace-only title', () => {
+      const state = boardReducer(defaultBoard, {
+        type: 'ADD_COLUMN',
+        payload: { title: '   ' },
+      })
+      expect(state).toEqual(defaultBoard)
+    })
+  })
+
   describe('MOVE_CARD', () => {
     it('moves card between columns', () => {
       const withCard = boardReducer(defaultBoard, {
